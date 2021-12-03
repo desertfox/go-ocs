@@ -9,6 +9,8 @@ func (o Ocs) DoCommand(CLICommand string) {
 		o.swap()
 	case "list":
 		o.list()
+	case "clear":
+		o.clear()
 	default:
 		o.cycle()
 	}

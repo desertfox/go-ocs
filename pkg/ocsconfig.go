@@ -101,3 +101,9 @@ func (oc ocsconfig) getConfigFilePath() string {
 func (oc ocsconfig) GetSelectedHost() Host {
 	return oc.List[oc.Selected]
 }
+
+func (oc *ocsconfig) clear() {
+	oc.List = []Host{}
+
+	fmt.Printf("clear: %v", oc.List)
+}
