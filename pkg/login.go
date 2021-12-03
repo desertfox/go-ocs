@@ -14,5 +14,12 @@ func (o Ocs) add() {
 func (o Ocs) execLogin() {
 	fmt.Printf("Logging into Server: %v\n", o.Host.Server)
 
-	exec.Command("oc", "login", fmt.Sprintf("--token=%v", o.Host.Token), fmt.Sprintf("--server=%v", o.Host.Server))
+	output, err := exec.Command("oc", "login", fmt.Sprintf("--token=%v", o.Host.Token), fmt.Sprintf("--server=%v", o.Host.Server)).Output()
+
+	if err != nil {
+		fmt.Println(err.Error())
+	} else {
+		fmt.Println(string(output[:]))
+	}
+
 }
