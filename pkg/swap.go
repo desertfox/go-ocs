@@ -22,7 +22,7 @@ func (o *Ocs) swap() {
 		o.Config.setSelected(i)
 	}
 
-	o.Server, o.Token = o.Config.getServerAndToken(o.Config.Selected)
+	o.Host = o.Config.GetSelectedHost()
 
 	o.execLogin()
 

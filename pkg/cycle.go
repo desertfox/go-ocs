@@ -13,7 +13,7 @@ func (o *Ocs) cycle() {
 		o.Config.Selected++
 	}
 
-	o.Server, o.Token = o.Config.getServerAndToken(o.Config.Selected)
+	o.Host = o.Config.GetSelectedHost()
 
 	o.execLogin()
 

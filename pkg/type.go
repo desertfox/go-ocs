@@ -1,6 +1,6 @@
 package ocs
 
 type Ocs struct {
-	Server, Token string
-	Config        *ocsconfig
+	Host   Host
+	Config *ocsconfig
 }

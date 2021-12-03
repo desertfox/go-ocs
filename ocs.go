@@ -12,10 +12,16 @@ func main() {
 		FlagSet.Parse(os.Args[2:])
 	}
 
-	ocs := ocs.Ocs{
+	host := ocs.Host{
 		Server: CLIServer,
 		Token:  CLIToken,
-		Config: ocs.GetOCSConfig(),
+	}
+
+	config := ocs.GetOCSConfig()
+
+	ocs := ocs.Ocs{
+		Host:   host,
+		Config: config,
 	}
 
 	ocs.DoCommand(CLICommand)

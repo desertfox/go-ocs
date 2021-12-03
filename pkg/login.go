@@ -8,11 +8,11 @@ import (
 func (o Ocs) add() {
 	o.execLogin()
 
-	o.Config.add(o.Server, o.Token)
+	o.Config.addHost(o.Host)
 }
 
 func (o Ocs) execLogin() {
-	fmt.Printf("Logging into Server: %v\n", o.Server)
+	fmt.Printf("Logging into Server: %v\n", o.Host.Server)
 
-	exec.Command("oc", "login", fmt.Sprintf("--token=%v", o.Token), fmt.Sprintf("--server=%v", o.Server))
+	exec.Command("oc", "login", fmt.Sprintf("--token=%v", o.Host.Token), fmt.Sprintf("--server=%v", o.Host.Server))
 }
