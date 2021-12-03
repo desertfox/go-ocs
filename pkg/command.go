@@ -15,6 +15,6 @@ func (o Ocs) DoCommand(CLICommand string) {
 		o.cycle()
 	}
 
-	o.Config.writeConfig()
+	o.Config.WriteConfig()
 
 }

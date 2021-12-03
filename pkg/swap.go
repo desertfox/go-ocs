@@ -15,11 +15,11 @@ func (o *Ocs) swap() {
 		fmt.Println("Uh oh:" + err.Error())
 	}
 
-	if i > len(o.Config.List)-1 {
-		fmt.Printf("Swap %v greater than %v of config values", i, len(o.Config.List)-1)
+	if i > len(o.Config.Hosts)-1 {
+		fmt.Printf("Swap %v greater than %v of config values", i, len(o.Config.Hosts)-1)
 		return
 	} else {
-		o.Config.setSelected(i)
+		o.Config.SetSelected(i)
 	}
 
 	o.Host = o.Config.GetSelectedHost()

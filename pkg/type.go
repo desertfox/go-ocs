@@ -1,6 +1,8 @@
 package ocs
 
+import "github.com/desertfox/ocs/pkg/config"
+
 type Ocs struct {
-	Host   Host
-	Config *ocsconfig
+	Host   config.Host
+	Config *config.Ocsconfig
 }

@@ -8,7 +8,7 @@ import (
 func (o Ocs) add() {
 	o.execLogin()
 
-	o.Config.addHost(o.Host)
+	o.Config.AddHost(o.Host)
 }
 
 func (o Ocs) execLogin() {

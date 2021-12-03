@@ -1,5 +1,5 @@
 package ocs
 
 func (o Ocs) clear() {
-	o.Config.clear()
+	o.Config.Clear()
 }

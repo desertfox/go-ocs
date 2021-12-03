@@ -1,4 +1,4 @@
-package ocs
+package config
 
 import (
 	"fmt"
@@ -11,9 +11,9 @@ import (
 
 var ocsconfigFile string = ".ocsconfig"
 
-type ocsconfig struct {
+type Ocsconfig struct {
 	Selected int `yaml:"Selected"`
-	List     []Host
+	Hosts    []Host
 }
 
 type Host struct {
@@ -21,15 +21,15 @@ type Host struct {
 	Token  string `yaml:"Token"`
 }
 
-func GetOCSConfig() *ocsconfig {
-	oc := &ocsconfig{
+func GetOCSConfig() *Ocsconfig {
+	oc := &Ocsconfig{
 		Selected: 0,
-		List:     []Host{},
+		Hosts:    []Host{},
 	}
 
 	file, err := ioutil.ReadFile(oc.getConfigFilePath())
 	if err != nil {
-		oc.writeConfig()
+		oc.WriteConfig()
 	}
 
 	err = yaml.Unmarshal(file, &oc)
@@ -40,35 +40,35 @@ func GetOCSConfig() *ocsconfig {
 	return oc
 }
 
-func (oc *ocsconfig) writeConfig() {
+func (oc *Ocsconfig) WriteConfig() {
 	data, err := yaml.Marshal(&oc)
 	if err != nil {
 		fmt.Println("Uh oh:" + err.Error())
 	}
 
-	err = ioutil.WriteFile(oc.getConfigFilePath(), data, 0777)
+	err = ioutil.WriteFile(oc.getConfigFilePath(), data, 0644)
 	if err != nil {
 		fmt.Println("Uh oh:" + err.Error())
 	}
 }
 
-func (oc *ocsconfig) addHost(h Host) {
+func (oc *Ocsconfig) AddHost(h Host) {
 	if oc.serverExists(h.Server) {
 		oc.updateHost(h)
 
-		fmt.Printf("add, server exists updating %v:", oc.List)
+		fmt.Printf("add, server exists updating %v:", oc.Hosts)
 
 		return
 	}
 
-	oc.List = append(oc.List, h)
+	oc.Hosts = append(oc.Hosts, h)
 
-	fmt.Printf("add: %v", oc.List)
+	fmt.Printf("add: %v", oc.Hosts)
 
 }
 
-func (oc ocsconfig) serverExists(server string) bool {
-	for _, host := range oc.List {
+func (oc Ocsconfig) serverExists(server string) bool {
+	for _, host := range oc.Hosts {
 		if host.Server == server {
 			return true
 		}
@@ -76,20 +76,20 @@ func (oc ocsconfig) serverExists(server string) bool {
 	return false
 }
 
-func (oc *ocsconfig) setSelected(i int) {
+func (oc *Ocsconfig) SetSelected(i int) {
 	oc.Selected = i
 }
 
-func (oc *ocsconfig) updateHost(h Host) {
-	for i, host := range oc.List {
+func (oc *Ocsconfig) updateHost(h Host) {
+	for i, host := range oc.Hosts {
 		if host.Server == h.Server {
-			oc.List[i] = h
+			oc.Hosts[i] = h
 			break
 		}
 	}
 }
 
-func (oc ocsconfig) getConfigFilePath() string {
+func (oc Ocsconfig) getConfigFilePath() string {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		fmt.Println("Uh oh:" + err.Error())
@@ -98,12 +98,13 @@ func (oc ocsconfig) getConfigFilePath() string {
 	return filepath.Join(home, ocsconfigFile)
 }
 
-func (oc ocsconfig) GetSelectedHost() Host {
-	return oc.List[oc.Selected]
+func (oc Ocsconfig) GetSelectedHost() Host {
+	return oc.Hosts[oc.Selected]
 }
 
-func (oc *ocsconfig) clear() {
-	oc.List = []Host{}
+func (oc *Ocsconfig) Clear() {
+	oc.Hosts = []Host{}
+	oc.Selected = 0
 
-	fmt.Printf("clear: %v", oc.List)
+	fmt.Printf("clear: %v", oc.Hosts)
 }
