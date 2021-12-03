@@ -38,6 +38,6 @@ Swap between Hosts in config and logs in
 Clear config entries
 - `ocs clear`
 
-### Cycle through clusters
+### Cycle
 Cycles through Hosts and logs in
 - `ocs`
