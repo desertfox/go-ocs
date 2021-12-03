@@ -12,4 +12,5 @@
 - list
 - swap
 -- #
+- clear
 - cycle ( No command word executes cycle )
