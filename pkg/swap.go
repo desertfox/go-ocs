@@ -15,17 +15,14 @@ func (o *Ocs) swap() {
 		fmt.Println("Uh oh:" + err.Error())
 	}
 
-	if i > len(o.config.List)-1 {
-		fmt.Printf("Swap %v greater than %v of config values", i, len(o.config.List)-1)
+	if i > len(o.Config.List)-1 {
+		fmt.Printf("Swap %v greater than %v of config values", i, len(o.Config.List)-1)
 		return
 	} else {
-		o.config.setSelected(i)
+		o.Config.setSelected(i)
 	}
 
-	data := o.config.getSelected()
-
-	o.Server = data[0]
-	o.Token = data[1]
+	o.Server, o.Token = o.Config.getServerAndToken(o.Config.Selected)
 
 	o.execLogin()
 

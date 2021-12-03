@@ -6,13 +6,13 @@ import (
 )
 
 func (o Ocs) add() {
-
 	o.execLogin()
 
-	o.config.add(o.Server, o.Token)
+	o.Config.add(o.Server, o.Token)
 }
 
 func (o Ocs) execLogin() {
-	fmt.Printf("Logging into Server: %v", o.Server)
+	fmt.Printf("Logging into Server: %v\n", o.Server)
+
 	exec.Command("oc", "login", fmt.Sprintf("--token=%v", o.Token), fmt.Sprintf("--server=%v", o.Server))
 }

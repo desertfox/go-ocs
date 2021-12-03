@@ -15,6 +15,7 @@ func main() {
 	ocs := ocs.Ocs{
 		Server: CLIServer,
 		Token:  CLIToken,
+		Config: ocs.GetOCSConfig(),
 	}
 
 	ocs.DoCommand(CLICommand)

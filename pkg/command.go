@@ -1,9 +1,6 @@
 package ocs
 
 func (o Ocs) DoCommand(CLICommand string) {
-
-	o.loadConfig()
-
 	switch CLICommand {
 
 	case "login":
@@ -15,4 +12,7 @@ func (o Ocs) DoCommand(CLICommand string) {
 	default:
 		o.cycle()
 	}
+
+	o.Config.writeConfig()
+
 }

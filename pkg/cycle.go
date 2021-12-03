@@ -1,21 +1,20 @@
 package ocs
 
 func (o *Ocs) cycle() {
-	selected := o.config.Selected
-
-	if selected+1 > len(o.config.List)-1 {
-		o.config.Selected = 0
-	} else {
-		o.config.Selected++
+	if len(o.Config.List) <= 1 {
+		return
 	}
 
-	data := o.config.getSelected()
+	selected := o.Config.Selected
 
-	o.Server = data[0]
-	o.Token = data[1]
+	if selected+1 > len(o.Config.List)-1 {
+		o.Config.Selected = 0
+	} else {
+		o.Config.Selected++
+	}
+
+	o.Server, o.Token = o.Config.getServerAndToken(o.Config.Selected)
 
 	o.execLogin()
-
-	o.config.writeConfig()
 
 }
