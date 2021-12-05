@@ -18,6 +18,7 @@ OCS is a wrapper for openshift cli-client *oc* logins to facilitate switching be
     \#
 - clear
 - cycle ( No command word executes cycle )
+- help
 ---
 
 ## Examples
@@ -41,3 +42,7 @@ Clear config entries
 ### Cycle
 Cycles through Hosts and executes oc login
 - `ocs`
+
+### Help
+Prints this file
+- `ocs help` or `ocs h` (only command with a "short" flag currently.)
