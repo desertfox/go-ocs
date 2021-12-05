@@ -5,13 +5,11 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
-
-	"github.com/desertfox/ocs/pkg/config"
 )
 
 type Ocs struct {
-	Host   config.Host
-	Config *config.Ocsconfig
+	Host   Host
+	Config *Ocsconfig
 }
 
 func (o Ocs) DoCommand(CLICommand string) {
@@ -22,7 +20,7 @@ func (o Ocs) DoCommand(CLICommand string) {
 	case "swap":
 		o.swap()
 	case "list":
-		o.list()
+
 	case "clear":
 		o.clear()
 	case "cycle":
@@ -33,12 +31,12 @@ func (o Ocs) DoCommand(CLICommand string) {
 
 	o.Config.WriteConfig()
 
+	o.list()
 }
 
 func (o *Ocs) cycle() {
-	if len(o.Config.Hosts)-1 <= 1 {
-		fmt.Println("Only 1 Host configured, no-op.")
-		o.list()
+	if len(o.Config.Hosts) <= 1 {
+		fmt.Printf("%v Host configured, no-op.\n", len(o.Config.Hosts))
 		return
 	}
 
@@ -53,13 +51,16 @@ func (o *Ocs) cycle() {
 	o.Host = o.Config.GetSelectedHost()
 
 	o.execLogin()
-
 }
+
 func (o Ocs) list() {
+	fmt.Printf("Selected: %v\n", o.Config.Selected)
+
 	for i, v := range o.Config.Hosts {
 		fmt.Printf("%v:%#v\n", i, v)
 	}
 }
+
 func (o Ocs) add() {
 	o.execLogin()
 
@@ -100,5 +101,4 @@ func (o *Ocs) swap() {
 	o.Host = o.Config.GetSelectedHost()
 
 	o.execLogin()
-
 }

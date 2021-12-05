@@ -1,4 +1,4 @@
-package config
+package ocs
 
 import (
 	"fmt"
@@ -56,14 +56,14 @@ func (oc *Ocsconfig) AddHost(h Host) {
 	if oc.serverExists(h.Server) {
 		oc.updateHost(h)
 
-		fmt.Printf("add, server exists updating %v:", oc.Hosts)
+		fmt.Printf("AddHost: server exists, updating server %v with new token\n", h.Server)
 
 		return
 	}
 
 	oc.Hosts = append(oc.Hosts, h)
 
-	fmt.Printf("add: %v", oc.Hosts)
+	fmt.Printf("AddHost: %v\n", h.Server)
 
 }
 
@@ -105,6 +105,4 @@ func (oc Ocsconfig) GetSelectedHost() Host {
 func (oc *Ocsconfig) Clear() {
 	oc.Hosts = []Host{}
 	oc.Selected = 0
-
-	fmt.Printf("clear: %v", oc.Hosts)
 }

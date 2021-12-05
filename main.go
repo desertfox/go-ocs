@@ -7,7 +7,6 @@ import (
 	"os"
 
 	ocs "github.com/desertfox/ocs/pkg"
-	"github.com/desertfox/ocs/pkg/config"
 )
 
 var (
@@ -45,11 +44,11 @@ func main() {
 		}
 	}
 
-	host := config.Host{
+	host := ocs.Host{
 		Server: CLIServer,
 		Token:  CLIToken,
 	}
-	config := config.GetOCSConfig()
+	config := ocs.GetOCSConfig()
 
 	ocs := ocs.Ocs{
 		Host:   host,
