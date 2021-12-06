@@ -25,6 +25,8 @@ func (o Ocs) DoCommand(CLICommand string) {
 		o.clear()
 	case "cycle":
 		o.cycle()
+	case "del":
+		o.del()
 	default:
 		o.cycle()
 	}
@@ -83,10 +85,7 @@ func (o Ocs) clear() {
 	o.Config.Clear()
 }
 func (o *Ocs) swap() {
-
-	id := os.Args[2]
-
-	i, err := strconv.Atoi(id)
+	i, err := strconv.Atoi(os.Args[2])
 	if err != nil {
 		fmt.Println("Uh oh:" + err.Error())
 	}
@@ -101,4 +100,13 @@ func (o *Ocs) swap() {
 	o.Host = o.Config.GetSelectedHost()
 
 	o.execLogin()
+}
+
+func (o *Ocs) del() {
+	i, err := strconv.Atoi(os.Args[2])
+	if err != nil {
+		fmt.Println("Uh oh:" + err.Error())
+	}
+
+	o.Config.Hosts = append(o.Config.Hosts[:i], o.Config.Hosts[i+1:]...)
 }
