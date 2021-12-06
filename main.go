@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"time"
 
 	ocs "github.com/desertfox/ocs/pkg"
 )
@@ -45,8 +46,9 @@ func main() {
 	}
 
 	host := ocs.Host{
-		Server: CLIServer,
-		Token:  CLIToken,
+		Server:  CLIServer,
+		Token:   CLIToken,
+		Created: time.Now(),
 	}
 	config := ocs.GetOCSConfig()
 

@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"time"
 
 	"gopkg.in/yaml.v3"
 )
@@ -17,8 +18,9 @@ type Ocsconfig struct {
 }
 
 type Host struct {
-	Server string `yaml:"Server"`
-	Token  string `yaml:"Token"`
+	Server  string    `yaml:"Server"`
+	Token   string    `yaml:"Token"`
+	Created time.Time `yaml:"Created"`
 }
 
 func GetOCSConfig() *Ocsconfig {
