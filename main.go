@@ -23,9 +23,11 @@ var (
 	readme string
 )
 
-const version = "0.0.5"
+const version = "0.0.6"
 
 func init() {
+	selfupdate.EnableLog()
+
 	doSelfUpdate()
 
 	if len(os.Args) > 1 {
