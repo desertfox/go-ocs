@@ -4,10 +4,13 @@ import (
 	_ "embed"
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"time"
 
+	"github.com/blang/semver"
 	ocs "github.com/desertfox/ocs/pkg"
+	"github.com/rhysd/go-github-selfupdate/selfupdate"
 )
 
 var (
@@ -20,7 +23,10 @@ var (
 	readme string
 )
 
+const version = "0.0.5"
+
 func init() {
+	doSelfUpdate()
 
 	if len(os.Args) > 1 {
 		CLICommand = os.Args[1]
@@ -36,6 +42,7 @@ func init() {
 }
 
 func main() {
+
 	if len(os.Args) > 1 {
 		FlagSet.Parse(os.Args[2:])
 
@@ -58,4 +65,20 @@ func main() {
 	}
 
 	ocs.DoCommand(CLICommand)
+}
+
+func doSelfUpdate() {
+	v := semver.MustParse(version)
+	latest, err := selfupdate.UpdateSelf(v, "desertfox/go-ocs")
+	if err != nil {
+		log.Println("Unable to execute update: ", err)
+		return
+	}
+
+	if latest.Version.Equals(v) {
+		//NO-OP
+	} else {
+		log.Println("Successfully updated ocs to version: ", latest.Version)
+		log.Println("Release note:\n", latest.ReleaseNotes)
+	}
 }
