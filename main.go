@@ -23,7 +23,7 @@ var (
 	readme string
 )
 
-const version = "0.0.6"
+const version = "0.0.7"
 
 func init() {
 	if os.Getenv("OCS_DEBUG") == "1" {
@@ -84,5 +84,7 @@ func doSelfUpdate() {
 	} else {
 		log.Println("Successfully updated ocs to version: ", latest.Version)
 		log.Println("Release note:\n", latest.ReleaseNotes)
+		log.Println("Re-run your command.")
+		os.Exit(0)
 	}
 }
