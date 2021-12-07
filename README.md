@@ -4,22 +4,16 @@ OCS is a wrapper for openshift cli-client *oc* logins to facilitate switching be
 
 ## Install
 
-- CP binary from repo/bin/ocs-$arch that matches your system into your $PATH
+- Visit Releases page and download binary for your systems arch
 
 ## Commands
-```
- ocs command --opt_name=opt_value
- ```
+`ocs command --opt_name=opt_value`
 - login
-    token
-    server
 - list
 - swap
-    \#
 - clear
 - cycle ( No command word executes cycle )
 - del
-    \#
 - help
 ---
 
