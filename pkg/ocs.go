@@ -5,7 +5,12 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
+	"strings"
+
+	"github.com/charmbracelet/lipgloss"
 )
+
+var style = lipgloss.NewStyle().PaddingLeft(2)
 
 type Ocs struct {
 	Host   Host
@@ -56,10 +61,16 @@ func (o *Ocs) cycle() {
 }
 
 func (o Ocs) list() {
-	fmt.Printf("Selected: %v\n", o.Config.Selected)
+	selectedColor := strconv.Itoa(25 + o.Config.Selected*20)
+	selectedString := style.Foreground(lipgloss.Color(selectedColor)).Render(fmt.Sprintf("Selected: %v ", o.Config.Selected))
+	colorBar := style.Copy().Padding(0, 0, 0, 0).Background(lipgloss.Color(selectedColor)).Render(strings.Repeat(" ", 10))
+	fmt.Println(selectedString + colorBar + "\n")
 
+	var colorIndex = 25
 	for i, v := range o.Config.Hosts {
-		fmt.Printf("%v:%#v\n", i, v)
+		hostString := style.Padding(0, 2, 0, 2).Foreground(lipgloss.Color(strconv.Itoa(colorIndex))).Render(fmt.Sprintf("Index:%v, Server:%v Created:%v", i, v.Server, v.Created.String()))
+		fmt.Println(hostString)
+		colorIndex += 20
 	}
 }
 
@@ -70,14 +81,15 @@ func (o Ocs) add() {
 }
 
 func (o Ocs) execLogin() {
-	fmt.Printf("Logging into Server: %v\n", o.Host.Server)
+	loginString := style.Foreground(lipgloss.Color("11")).Render(fmt.Sprintf("Logging into Server: %v", o.Host.Server))
+	fmt.Println(loginString)
 
 	output, err := exec.Command("oc", "login", fmt.Sprintf("--token=%v", o.Host.Token), fmt.Sprintf("--server=%v", o.Host.Server)).Output()
 
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println(style.Foreground(lipgloss.Color("9")).Render(err.Error()))
 	} else {
-		fmt.Println(string(output[:]))
+		fmt.Println(style.Foreground(lipgloss.Color("10")).Render(string(output[:])))
 	}
 
 }

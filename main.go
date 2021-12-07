@@ -26,7 +26,9 @@ var (
 const version = "0.0.6"
 
 func init() {
-	selfupdate.EnableLog()
+	if os.Getenv("OCS_DEBUG") == "1" {
+		selfupdate.EnableLog()
+	}
 
 	doSelfUpdate()
 

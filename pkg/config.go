@@ -5,8 +5,10 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strconv"
 	"time"
 
+	"github.com/charmbracelet/lipgloss"
 	"gopkg.in/yaml.v3"
 )
 
@@ -57,21 +59,23 @@ func (oc *Ocsconfig) WriteConfig() {
 func (oc *Ocsconfig) AddHost(h Host) {
 	if oc.serverExists(h.Server) {
 		oc.updateHost(h)
-
-		fmt.Printf("AddHost: server exists, updating server %v with new token\n", h.Server)
-
 		return
 	}
 
 	oc.Hosts = append(oc.Hosts, h)
+	oc.SetSelected(len(oc.Hosts) - 1)
 
-	fmt.Printf("AddHost: %v\n", h.Server)
+	selectedColor := strconv.Itoa(25 + oc.Selected*20)
+	addHostString := style.PaddingLeft(2).Foreground(lipgloss.Color(selectedColor)).Render(fmt.Sprintf("AddHost: %v\n", h.Server))
+	fmt.Println(addHostString)
 
 }
 
 func (oc Ocsconfig) serverExists(server string) bool {
 	for _, host := range oc.Hosts {
 		if host.Server == server {
+			serverExistsString := style.PaddingLeft(2).Foreground(lipgloss.Color("11")).Render(fmt.Sprintf("serverExists: %v", server))
+			fmt.Println(serverExistsString)
 			return true
 		}
 	}
@@ -86,6 +90,11 @@ func (oc *Ocsconfig) updateHost(h Host) {
 	for i, host := range oc.Hosts {
 		if host.Server == h.Server {
 			oc.Hosts[i] = h
+			oc.SetSelected(i)
+
+			updateHostString := style.PaddingLeft(2).Foreground(lipgloss.Color("10")).Render(fmt.Sprintf("updateHost: %v\n", h.Server))
+			fmt.Println(updateHostString)
+
 			break
 		}
 	}
