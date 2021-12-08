@@ -23,7 +23,7 @@ var (
 	readme string
 )
 
-const version = "0.0.7"
+const version = "0.0.8"
 
 func init() {
 	if os.Getenv("OCS_DEBUG") == "1" {
