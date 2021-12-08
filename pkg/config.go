@@ -15,8 +15,9 @@ import (
 var configFile string = ".ocsconfig"
 
 type config struct {
-	Selected int `yaml:"Selected"`
-	Hosts    []Host
+	Selected    int       `yaml:"Selected"`
+	UpdateCheck time.Time `yaml:UpdateCheck"`
+	Hosts       []Host
 }
 
 type Host struct {
@@ -31,8 +32,9 @@ func (c *config) SetSelected(i int) {
 
 func GetConfig() *config {
 	c := &config{
-		Selected: 0,
-		Hosts:    []Host{},
+		Selected:    0,
+		Hosts:       []Host{},
+		UpdateCheck: time.Now(),
 	}
 
 	file, err := ioutil.ReadFile(c.getConfigFilePath())
@@ -60,10 +62,10 @@ func (c *config) writeConfig() {
 	}
 }
 
-func (c *config) addHost(h Host) {
+func (c *config) addHost(h Host) Host {
 	if c.serverExists(h.Server) {
 		c.updateHost(h)
-		return
+		return c.GetSelectedHost()
 	}
 
 	c.Hosts = append(c.Hosts, h)
@@ -73,6 +75,7 @@ func (c *config) addHost(h Host) {
 	addHostString := style.PaddingLeft(2).Foreground(selectedColor).Render(fmt.Sprintf("AddHost: %v\n", h.Server))
 	fmt.Println(addHostString)
 
+	return c.GetSelectedHost()
 }
 
 func (c *config) swapHost(index int) Host {

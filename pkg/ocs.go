@@ -56,8 +56,8 @@ func (o Ocs) execLogin() {
 
 }
 
-func (o Ocs) add() {
-	o.Config.addHost(o.Host)
+func (o *Ocs) add() {
+	o.Host = o.Config.addHost(o.Host)
 
 	o.execLogin()
 }
@@ -99,4 +99,8 @@ func (o Ocs) list() {
 		fmt.Println(hostString)
 		colorIndex += 20
 	}
+}
+
+func (o *Ocs) SetUpdateCheck() {
+	o.Config.UpdateCheck = time.Now()
 }

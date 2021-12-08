@@ -30,8 +30,6 @@ func init() {
 		selfupdate.EnableLog()
 	}
 
-	doSelfUpdate()
-
 	if len(os.Args) > 1 {
 		CLICommand = os.Args[1]
 	} else {
@@ -68,23 +66,32 @@ func main() {
 		Config: config,
 	}
 
+	doSelfUpdate(ocs)
+
 	ocs.DoCommand(CLICommand)
 }
 
-func doSelfUpdate() {
-	v := semver.MustParse(version)
-	latest, err := selfupdate.UpdateSelf(v, "desertfox/go-ocs")
-	if err != nil {
-		log.Println("Unable to execute update: ", err)
-		return
+func doSelfUpdate(ocs ocs.Ocs) {
+	waitPeriodMin := time.Now().Add(-1 * 24 * time.Hour)
+
+	if waitPeriodMin.After(ocs.Config.UpdateCheck) {
+		v := semver.MustParse(version)
+		latest, err := selfupdate.UpdateSelf(v, "desertfox/go-ocs")
+		if err != nil {
+			log.Println("Unable to execute update: ", err)
+			return
+		}
+
+		ocs.SetUpdateCheck()
+
+		if latest.Version.Equals(v) {
+			//NO-OP
+		} else {
+			log.Println("Successfully updated ocs to version: ", latest.Version)
+			log.Println("Release note:\n", latest.ReleaseNotes)
+			log.Println("Re-run your command.")
+			os.Exit(0)
+		}
 	}
 
-	if latest.Version.Equals(v) {
-		//NO-OP
-	} else {
-		log.Println("Successfully updated ocs to version: ", latest.Version)
-		log.Println("Release note:\n", latest.ReleaseNotes)
-		log.Println("Re-run your command.")
-		os.Exit(0)
-	}
 }
