@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/charmbracelet/lipgloss"
 )
@@ -94,7 +95,7 @@ func (o Ocs) list() {
 
 	var colorIndex = 25
 	for i, v := range o.Config.Hosts {
-		hostString := style.Padding(0, 2, 0, 2).Foreground(lipgloss.Color(strconv.Itoa(colorIndex))).Render(fmt.Sprintf("Index:%v, Server:%v Created:%v", i, v.Server, v.Created.String()))
+		hostString := style.Padding(0, 2, 0, 2).Foreground(lipgloss.Color(strconv.Itoa(colorIndex))).Render(fmt.Sprintf("Index:%v, Created:%v, Server:%v", i, v.Created.Format(time.RFC1123), v.Server))
 		fmt.Println(hostString)
 		colorIndex += 20
 	}
