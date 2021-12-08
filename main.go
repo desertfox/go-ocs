@@ -61,7 +61,7 @@ func main() {
 		Token:   CLIToken,
 		Created: time.Now(),
 	}
-	config := ocs.GetOCSConfig()
+	config := ocs.GetConfig()
 
 	ocs := ocs.Ocs{
 		Host:   host,
