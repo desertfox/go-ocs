@@ -33,6 +33,8 @@ func (o Ocs) DoCommand(CLICommand string) {
 		o.cycle()
 	case "del":
 		o.del()
+	case "prune":
+		o.prune()
 	default:
 		o.cycle()
 	}
@@ -103,4 +105,8 @@ func (o Ocs) list() {
 
 func (o *Ocs) SetUpdateCheck() {
 	o.Config.UpdateCheck = time.Now()
+}
+
+func (o *Ocs) prune() {
+	o.Config.prune()
 }

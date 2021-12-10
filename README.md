@@ -14,6 +14,7 @@ OCS is a wrapper for openshift cli-client *oc* logins to facilitate switching be
 - clear
 - cycle ( No command word executes cycle )
 - del
+- prune
 - help
 ---
 
@@ -42,6 +43,10 @@ Cycles through Hosts and executes oc login
 ### Del
 Removes Host from config
 - `ocs del 1`
+
+### Prune
+Remove credentials that are older than 24 hours
+- `osc prune`
 
 ### Help
 Prints this file

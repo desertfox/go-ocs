@@ -16,7 +16,7 @@ var configFile string = ".ocsconfig"
 
 type config struct {
 	Selected    int       `yaml:"Selected"`
-	UpdateCheck time.Time `yaml:UpdateCheck"`
+	UpdateCheck time.Time `yaml:"UpdateCheck"`
 	Hosts       []Host
 }
 
@@ -95,6 +95,7 @@ func (c *config) delHost(index int) {
 func (c *config) cycleHost() Host {
 	if len(c.Hosts) <= 1 {
 		fmt.Printf("%v Host configured, no-op.\n", len(c.Hosts))
+		os.Exit(0)
 	}
 
 	if c.Selected+1 > len(c.Hosts)-1 {
@@ -147,4 +148,24 @@ func (c config) GetSelectedHost() Host {
 func (c *config) clearHost() {
 	c.Hosts = []Host{}
 	c.Selected = 0
+}
+
+func (c *config) prune() {
+	var recentHosts []Host
+
+	checkTime := time.Now().Add(-1 * 24 * time.Hour)
+
+	prunestyle := style.PaddingLeft(2).Foreground(lipgloss.Color("9"))
+
+	for _, v := range c.Hosts {
+		if v.Created.After(checkTime) {
+			pruneHostString := prunestyle.Render(fmt.Sprintf("pruneHost: %v\n", v.Server))
+			fmt.Println(pruneHostString)
+			continue
+		} else {
+			recentHosts = append(recentHosts, v)
+		}
+	}
+
+	c.Hosts = recentHosts
 }
