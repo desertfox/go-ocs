@@ -23,7 +23,7 @@ var (
 	readme string
 )
 
-const version = "0.1.1"
+const version = "0.1.2"
 
 func init() {
 	if os.Getenv("OCS_DEBUG") == "1" {
@@ -36,20 +36,25 @@ func init() {
 }
 
 func main() {
+	var opts []string = os.Args
 
-	if len(os.Args) > 1 {
-		CLICommand = os.Args[1]
+	if len(opts) > 1 {
+		if opts[0] == "oc" {
+			opts = opts[1:]
+		}
 
-		FlagSet.Parse(os.Args[2:])
+		CLICommand = opts[1]
 
-		if os.Args[1] == "help" || os.Args[1] == "h" {
+		FlagSet.Parse(opts[2:])
+
+		if CLICommand == "help" || CLICommand == "h" {
 			fmt.Println(readme)
 			os.Exit(0)
 		}
 
-		if os.Args[1] == "login" {
-			CLIServer = os.Args[2]
-			FlagSet.Parse(os.Args[3:])
+		if CLICommand == "login" {
+			CLIServer = opts[2]
+			FlagSet.Parse(opts[3:])
 		}
 	}
 

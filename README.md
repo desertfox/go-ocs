@@ -23,6 +23,7 @@ OCS is a wrapper for openshift cli-client *oc* logins to facilitate switching be
 ### Login 
 Adds server host and token hash to local config and executes oc login passthrough
 - `ocs login --server=https://somecluster.com:6667 --token=sha256_blahblah`
+- `ocs oc login --server=https://somecluster.com:6667 --token=sha256_blahblah`
 
 ### List 
 Lists Hosts in config, no-op
