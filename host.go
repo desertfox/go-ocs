@@ -1,4 +1,4 @@
-package ocs
+package main
 
 import "time"
 
@@ -9,7 +9,7 @@ type host struct {
 	Created time.Time `yaml:"Created"`
 }
 
-func NewHost(server, token, version string) host {
+func newHost(server, token, version string) host {
 	return host{
 		Server:  server,
 		Token:   token,

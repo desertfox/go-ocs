@@ -3,8 +3,6 @@ package main
 import (
 	_ "embed"
 	"os"
-
-	ocs "github.com/desertfox/ocs/pkg"
 )
 
 var (
@@ -15,7 +13,10 @@ var (
 func main() {
 	command, server, token, version := parseArgs(os.Args)
 
-	ocs := ocs.New(ocs.NewHost(server, token, version))
+	ocs := Ocs{
+		host:   newHost(server, token, version),
+		config: getConfig(),
+	}
 
 	ocs.DoCommand(command)
 }

@@ -1,4 +1,4 @@
-package ocs
+package main
 
 import "github.com/charmbracelet/lipgloss"
 

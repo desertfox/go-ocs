@@ -1,4 +1,4 @@
-package ocs
+package main
 
 import (
 	"fmt"
@@ -15,9 +15,8 @@ import (
 var configFile string = ".ocsconfig"
 
 type config struct {
-	Selected    int       `yaml:"Selected"`
-	UpdateCheck time.Time `yaml:"UpdateCheck"`
-	Hosts       []host
+	Selected int `yaml:"Selected"`
+	Hosts    []host
 }
 
 func (c *config) SetSelected(i int) {
@@ -26,9 +25,8 @@ func (c *config) SetSelected(i int) {
 
 func getConfig() *config {
 	c := &config{
-		Selected:    0,
-		Hosts:       []host{},
-		UpdateCheck: time.Now(),
+		Selected: 0,
+		Hosts:    []host{},
 	}
 
 	file, err := ioutil.ReadFile(c.getConfigFilePath())
