@@ -17,23 +17,17 @@ var configFile string = ".ocsconfig"
 type config struct {
 	Selected    int       `yaml:"Selected"`
 	UpdateCheck time.Time `yaml:"UpdateCheck"`
-	Hosts       []Host
-}
-
-type Host struct {
-	Server  string    `yaml:"Server"`
-	Token   string    `yaml:"Token"`
-	Created time.Time `yaml:"Created"`
+	Hosts       []host
 }
 
 func (c *config) SetSelected(i int) {
 	c.Selected = i
 }
 
-func GetConfig() *config {
+func getConfig() *config {
 	c := &config{
 		Selected:    0,
-		Hosts:       []Host{},
+		Hosts:       []host{},
 		UpdateCheck: time.Now(),
 	}
 
@@ -62,7 +56,7 @@ func (c *config) writeConfig() {
 	}
 }
 
-func (c *config) addHost(h Host) Host {
+func (c *config) addHost(h host) host {
 	if c.serverExists(h.Server) {
 		c.updateHost(h)
 		return c.GetSelectedHost()
@@ -78,7 +72,7 @@ func (c *config) addHost(h Host) Host {
 	return c.GetSelectedHost()
 }
 
-func (c *config) swapHost(index int) Host {
+func (c *config) swapHost(index int) host {
 	if index > len(c.Hosts)-1 {
 		fmt.Printf("Swap %v greater than %v of config values", index, len(c.Hosts)-1)
 	} else {
@@ -92,7 +86,7 @@ func (c *config) delHost(index int) {
 	c.Hosts = append(c.Hosts[:index], c.Hosts[index+1:]...)
 }
 
-func (c *config) cycleHost() Host {
+func (c *config) cycleHost() host {
 	if len(c.Hosts) <= 1 {
 		fmt.Printf("%v Host configured, no-op.\n", len(c.Hosts))
 		os.Exit(0)
@@ -118,7 +112,7 @@ func (c config) serverExists(server string) bool {
 	return false
 }
 
-func (c *config) updateHost(h Host) {
+func (c *config) updateHost(h host) {
 	for i, host := range c.Hosts {
 		if host.Server == h.Server {
 			c.Hosts[i] = h
@@ -141,17 +135,17 @@ func (c config) getConfigFilePath() string {
 	return filepath.Join(home, configFile)
 }
 
-func (c config) GetSelectedHost() Host {
+func (c config) GetSelectedHost() host {
 	return c.Hosts[c.Selected]
 }
 
 func (c *config) clearHost() {
-	c.Hosts = []Host{}
+	c.Hosts = []host{}
 	c.Selected = 0
 }
 
 func (c *config) prune() {
-	var recentHosts []Host
+	var recentHosts []host
 
 	checkTime := time.Now().Add(-1 * 24 * time.Hour)
 

@@ -7,15 +7,25 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/charmbracelet/lipgloss"
 )
 
-var style = lipgloss.NewStyle().PaddingLeft(2)
+var (
+	LEGACY bool = false
+)
 
 type Ocs struct {
-	Host   Host
+	Host   host
 	Config *config
+}
+
+func New(h host) Ocs {
+	return Ocs{
+		Host: h,
+	}
+}
+
+func (o *Ocs) BuildConfig() {
+	o.Config = getConfig()
 }
 
 func (o Ocs) DoCommand(CLICommand string) {
@@ -45,15 +55,28 @@ func (o Ocs) DoCommand(CLICommand string) {
 }
 
 func (o Ocs) execLogin() {
-	loginString := style.Foreground(lipgloss.Color("11")).Render(fmt.Sprintf("Logging into Server: %v", o.Host.Server))
-	fmt.Println(loginString)
+	fmt.Println(yellow.Render(fmt.Sprintf("Logging into Server: %v", o.Host.Server)))
 
-	output, err := exec.Command("oc", "login", fmt.Sprintf("--token=%v", o.Host.Token), fmt.Sprintf("--server=%v", o.Host.Server)).Output()
+	if o.Host.Version == "" {
+		panic("Host does not have version specified, clear your config and re-login to servers.")
+	}
+
+	var (
+		output []byte
+		err    error
+	)
+
+	switch o.Host.Version {
+	case "4.X":
+		output, err = exec.Command("oc", "login", fmt.Sprintf("--token=%v", o.Host.Token), fmt.Sprintf("--server=%v", o.Host.Server)).Output()
+	case "3.X":
+		output, err = exec.Command("oc", "login", o.Host.Server, fmt.Sprintf("--token=%v", o.Host.Token)).Output()
+	}
 
 	if err != nil {
-		fmt.Println(style.Foreground(lipgloss.Color("9")).Render(err.Error()))
+		fmt.Println(red.Render(err.Error()))
 	} else {
-		fmt.Println(style.Foreground(lipgloss.Color("10")).Render(string(output[:])))
+		fmt.Println(green.Render(string(output[:])))
 	}
 
 }
@@ -90,14 +113,14 @@ func (o *Ocs) cycle() {
 
 func (o Ocs) list() {
 	selectedColor := strconv.Itoa(25 + o.Config.Selected*20)
-	selectedString := style.Foreground(lipgloss.Color(selectedColor)).Render(fmt.Sprintf("Selected: %v ", o.Config.Selected))
-	colorBar := style.Copy().Padding(0, 0, 0, 0).Background(lipgloss.Color(selectedColor)).Render(strings.Repeat(" ", 10))
+	selectedString := generateStyleForeground(selectedColor).Render(fmt.Sprintf("Selected: %v ", o.Config.Selected))
+	colorBar := generateStyleBackground(selectedColor).Render(strings.Repeat(" ", 10))
 
 	fmt.Println(selectedString + colorBar + "\n")
 
 	var colorIndex = 25
 	for i, v := range o.Config.Hosts {
-		hostString := style.Padding(0, 2, 0, 2).Foreground(lipgloss.Color(strconv.Itoa(colorIndex))).Render(fmt.Sprintf("Index:%v, Created:%v, Server:%v", i, v.Created.Format(time.RFC1123), v.Server))
+		hostString := generateStyleForeground(strconv.Itoa(colorIndex)).Render(fmt.Sprintf("Index:%v, Created:%v, Server:%v", i, v.Created.Format(time.RFC1123), v.Server))
 		fmt.Println(hostString)
 		colorIndex += 20
 	}
