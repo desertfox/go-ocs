@@ -58,9 +58,3 @@ func (o Ocs) DoCommand(CLICommand string) {
 	}
 
 }
-
-/*
-func (o *Ocs) SetUpdateCheck() {
-	o.config.UpdateCheck = time.Now()
-}
-*/

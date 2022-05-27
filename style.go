@@ -10,9 +10,9 @@ var (
 )
 
 func generateStyleForeground(color string) lipgloss.Style {
-	return style.Foreground(lipgloss.Color(color))
+	return style.Copy().Foreground(lipgloss.Color(color))
 }
 
 func generateStyleBackground(color string) lipgloss.Style {
-	return style.Background(lipgloss.Color(color))
+	return style.Copy().Background(lipgloss.Color(color))
 }
