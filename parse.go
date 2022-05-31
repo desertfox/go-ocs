@@ -1,9 +1,15 @@
 package main
 
 import (
+	_ "embed"
 	"flag"
 	"fmt"
 	"os"
+)
+
+var (
+	//go:embed README.md
+	readme string
 )
 
 func parseArgs(args []string) (string, string, string, string) {

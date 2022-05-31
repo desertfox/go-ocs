@@ -5,86 +5,54 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"strconv"
-	"time"
 
-	"github.com/charmbracelet/lipgloss"
 	"gopkg.in/yaml.v3"
 )
 
-var configFile string = ".ocsconfig"
+var (
+	configFileName string = ".ocsconfig"
+)
+
+func buildConfigFilePath() string {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		fmt.Println("unable to find homedir" + err.Error())
+	}
+
+	return filepath.Join(home, configFileName)
+}
 
 type config struct {
 	Selected int `yaml:"Selected"`
 	Hosts    []host
 }
 
-func (c *config) SetSelected(i int) {
-	c.Selected = i
-}
-
-func getConfig() *config {
-	c := &config{
+func emptyConfig() *config {
+	return &config{
 		Selected: 0,
 		Hosts:    []host{},
 	}
-
-	file, err := ioutil.ReadFile(c.getConfigFilePath())
-	if err != nil {
-		c.writeConfig()
-	}
-
-	err = yaml.Unmarshal(file, &c)
-	if err != nil {
-		fmt.Println("Uh oh:" + err.Error())
-	}
-
-	return c
 }
 
-func (c *config) writeConfig() {
-	data, err := yaml.Marshal(&c)
-	if err != nil {
-		fmt.Println("Uh oh:" + err.Error())
-	}
-
-	err = ioutil.WriteFile(c.getConfigFilePath(), data, 0644)
-	if err != nil {
-		fmt.Println("Uh oh:" + err.Error())
-	}
+func (c *config) setSelected(i int) {
+	c.Selected = i
 }
 
-func (c *config) addHost(h host) host {
-	if c.serverExists(h.Server) {
-		c.updateHost(h)
-		return c.GetSelectedHost()
-	}
-
-	c.Hosts = append(c.Hosts, h)
-	c.SetSelected(len(c.Hosts) - 1)
-
-	selectedColor := lipgloss.Color(strconv.Itoa(25 + c.Selected*20))
-	addHostString := style.PaddingLeft(2).Foreground(selectedColor).Render(fmt.Sprintf("AddHost: %v\n", h.Server))
-	fmt.Println(addHostString)
-
-	return c.GetSelectedHost()
+func (c *config) getSelectedHost() host {
+	return c.Hosts[c.Selected]
 }
 
-func (c *config) swapHost(index int) host {
+func (c *config) swapSelected(index int) host {
 	if index > len(c.Hosts)-1 {
-		fmt.Printf("Swap %v greater than %v of config values", index, len(c.Hosts)-1)
+		fmt.Printf("Swap %v greater than %v of config values", index, len(c.Hosts))
 	} else {
-		c.SetSelected(index)
+		c.setSelected(index)
 	}
 
-	return c.GetSelectedHost()
+	return c.getSelectedHost()
 }
 
-func (c *config) delHost(index int) {
-	c.Hosts = append(c.Hosts[:index], c.Hosts[index+1:]...)
-}
-
-func (c *config) cycleHost() host {
+func (c *config) CycleSelected() host {
 	if len(c.Hosts) <= 1 {
 		fmt.Printf("%v Host configured, no-op.\n", len(c.Hosts))
 		os.Exit(0)
@@ -96,68 +64,35 @@ func (c *config) cycleHost() host {
 		c.Selected++
 	}
 
-	return c.GetSelectedHost()
+	return c.getSelectedHost()
 }
 
-func (c config) serverExists(server string) bool {
-	for _, host := range c.Hosts {
-		if host.Server == server {
-			serverExistsString := style.PaddingLeft(2).Foreground(lipgloss.Color("11")).Render(fmt.Sprintf("serverExists: %v", server))
-			fmt.Println(serverExistsString)
-			return true
-		}
+func getConfig() *config {
+	c := emptyConfig()
+
+	file, err := ioutil.ReadFile(buildConfigFilePath())
+	if err != nil {
+		writeConfig(c)
 	}
-	return false
-}
 
-func (c *config) updateHost(h host) {
-	for i, host := range c.Hosts {
-		if host.Server == h.Server {
-			c.Hosts[i] = h
-			c.SetSelected(i)
-
-			updateHostString := style.PaddingLeft(2).Foreground(lipgloss.Color("10")).Render(fmt.Sprintf("updateHost: %v\n", h.Server))
-			fmt.Println(updateHostString)
-
-			break
-		}
-	}
-}
-
-func (c config) getConfigFilePath() string {
-	home, err := os.UserHomeDir()
+	err = yaml.Unmarshal(file, &c)
 	if err != nil {
 		fmt.Println("Uh oh:" + err.Error())
 	}
 
-	return filepath.Join(home, configFile)
+	return c
 }
 
-func (c config) GetSelectedHost() host {
-	return c.Hosts[c.Selected]
-}
-
-func (c *config) clearHost() {
-	c.Hosts = []host{}
-	c.Selected = 0
-}
-
-func (c *config) prune() {
-	var recentHosts []host
-
-	checkTime := time.Now().Add(-1 * 24 * time.Hour)
-
-	prunestyle := style.PaddingLeft(2).Foreground(lipgloss.Color("9"))
-
-	for _, v := range c.Hosts {
-		if v.Created.After(checkTime) {
-			pruneHostString := prunestyle.Render(fmt.Sprintf("pruneHost: %v\n", v.Server))
-			fmt.Println(pruneHostString)
-			continue
-		} else {
-			recentHosts = append(recentHosts, v)
-		}
+func writeConfig(c *config) {
+	data, err := yaml.Marshal(&c)
+	if err != nil {
+		fmt.Println("unable to marshal config data:" + err.Error())
+		return
 	}
 
-	c.Hosts = recentHosts
+	err = ioutil.WriteFile(buildConfigFilePath(), data, 0644)
+	if err != nil {
+		fmt.Println("unable to write data to config file" + err.Error())
+		return
+	}
 }
