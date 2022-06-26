@@ -11,24 +11,25 @@ func Do(CLICommand string, h host, args []string) {
 	switch CLICommand {
 	case "login":
 		c.add(h)
+		c.login()
 	case "swap":
 		c.swapSelected(getOption(args))
+		c.login()
 	case "list":
 	case "clear":
 		writeConfig(emptyConfig())
-		return
 	case "cycle":
-		c.CycleSelected()
+		c.cycleSelected()
+		c.login()
 	case "del":
 		c.del(getOption(args))
+		c.login()
 	case "prune":
 		c.prune()
-		return
+		c.login()
 	default:
-		c.CycleSelected()
+		c.cycleSelected()
 	}
-
-	login(c)
 
 	writeConfig(c)
 

@@ -52,7 +52,7 @@ func (c *config) swapSelected(index int) host {
 	return c.getSelectedHost()
 }
 
-func (c *config) CycleSelected() host {
+func (c *config) cycleSelected() host {
 	if len(c.Hosts) <= 1 {
 		fmt.Printf("%v Host configured, no-op.\n", len(c.Hosts))
 		os.Exit(0)
