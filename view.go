@@ -11,9 +11,9 @@ import (
 
 var (
 	style  = lipgloss.NewStyle().PaddingLeft(2)
-	red    = style.Foreground(lipgloss.Color("9"))
-	green  = style.Foreground(lipgloss.Color("10"))
-	yellow = style.Foreground(lipgloss.Color("11"))
+	red    = style.Copy().Foreground(lipgloss.Color("9"))
+	green  = style.Copy().Foreground(lipgloss.Color("10"))
+	yellow = style.Copy().Foreground(lipgloss.Color("11"))
 )
 
 func generateStyleForeground(color string) lipgloss.Style {
