@@ -29,6 +29,7 @@ func Do(CLICommand string, h host, args []string) {
 		c.login()
 	default:
 		c.cycleSelected()
+		c.login()
 	}
 
 	writeConfig(c)

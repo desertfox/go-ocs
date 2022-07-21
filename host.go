@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"errors"
 	"fmt"
 	"os/exec"
 	"time"
@@ -78,25 +80,34 @@ func (c *config) prune() {
 
 func (c *config) login() {
 	var (
-		output []byte
-		err    error
-		h      host = c.getSelectedHost()
+		h    host = c.getSelectedHost()
+		args []string
+		ee   *exec.ExitError
+		out  bytes.Buffer
 	)
 
 	fmt.Println(yellow.Render(fmt.Sprintf("Logging into Server: %v", h.Server)))
 
 	switch h.Version {
 	case "4.X":
-		output, err = exec.Command("oc", "login", fmt.Sprintf("--token=%v", h.Token), fmt.Sprintf("--server=%v", h.Server)).Output()
+		args = []string{"login", fmt.Sprintf("--token=%v", h.Token), fmt.Sprintf("--server=%v", h.Server)}
 	case "3.X":
-		output, err = exec.Command("oc", "login", h.Server, fmt.Sprintf("--token=%v", h.Token)).Output()
+		args = []string{"login", h.Server, fmt.Sprintf("--token=%v", h.Token)}
 	default:
-		output, err = exec.Command("oc", "login", fmt.Sprintf("--token=%v", h.Token), fmt.Sprintf("--server=%v", h.Server)).Output()
+		args = []string{"login", fmt.Sprintf("--token=%v", h.Token), fmt.Sprintf("--server=%v", h.Server)}
 	}
 
-	if err != nil {
-		fmt.Println(red.Render(err.Error()))
+	cmd := exec.Command("oc", args...)
+	cmd.Stdout = &out
+
+	if err := cmd.Run(); err != nil {
+		if errors.As(err, &ee) {
+			fmt.Println(red.Render(fmt.Sprintf("exit code error:%d", ee.ExitCode())))
+		} else {
+			fmt.Println(red.Render(err.Error()))
+		}
+		return
 	}
 
-	fmt.Println(green.Render(string(output[:])))
+	fmt.Println(green.Render(out.String()))
 }
