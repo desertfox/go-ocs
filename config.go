@@ -2,11 +2,9 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
-
-	"gopkg.in/yaml.v3"
+	"time"
 )
 
 var (
@@ -31,6 +29,62 @@ func emptyConfig() *config {
 	return &config{
 		Selected: 0,
 		Hosts:    []host{},
+	}
+}
+
+func (c *config) add(h host) host {
+	if c.exists(h.Server) {
+		c.update(h)
+
+		return c.getSelectedHost()
+	}
+
+	c.Hosts = append(c.Hosts, h)
+	c.setSelected(len(c.Hosts) - 1)
+
+	printNewHost(c, h)
+
+	return c.getSelectedHost()
+}
+
+func (c *config) del(index int) {
+	c.Hosts = append(c.Hosts[:index], c.Hosts[index+1:]...)
+	c.setSelected(0)
+}
+
+func (c *config) update(h host) {
+	for i, host := range c.Hosts {
+		if host.Server == h.Server {
+			c.Hosts[i] = h
+			c.setSelected(i)
+			printUpdateHost(h)
+			break
+		}
+	}
+}
+
+func (c *config) exists(server string) bool {
+	for _, host := range c.Hosts {
+		if host.Server == server {
+			printServerExists(server)
+			return true
+		}
+	}
+	return false
+}
+
+func (c *config) prune() {
+	var checkTime = time.Now().Add(-1 * 24 * time.Hour)
+
+	for i, v := range c.Hosts {
+		if v.Created.After(checkTime) {
+			printPuneHost(c.Hosts[i])
+			c.del(i)
+			if c.Selected == i {
+				c.setSelected(0)
+			}
+			continue
+		}
 	}
 }
 
@@ -65,34 +119,4 @@ func (c *config) cycleSelected() host {
 	}
 
 	return c.getSelectedHost()
-}
-
-func getConfig() *config {
-	c := emptyConfig()
-
-	file, err := ioutil.ReadFile(buildConfigFilePath())
-	if err != nil {
-		writeConfig(c)
-	}
-
-	err = yaml.Unmarshal(file, &c)
-	if err != nil {
-		fmt.Println("Uh oh:" + err.Error())
-	}
-
-	return c
-}
-
-func writeConfig(c *config) {
-	data, err := yaml.Marshal(&c)
-	if err != nil {
-		fmt.Println("unable to marshal config data:" + err.Error())
-		return
-	}
-
-	err = ioutil.WriteFile(buildConfigFilePath(), data, 0644)
-	if err != nil {
-		fmt.Println("unable to write data to config file" + err.Error())
-		return
-	}
 }

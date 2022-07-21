@@ -11,25 +11,34 @@ func Do(CLICommand string, h host, args []string) {
 	switch CLICommand {
 	case "login":
 		c.add(h)
-		c.login()
+		if err := login(c); err != nil {
+			c.del(c.Selected)
+		}
 	case "swap":
 		c.swapSelected(getOption(args))
-		c.login()
+		if err := login(c); err != nil {
+			c.del(c.Selected)
+		}
 	case "list":
 	case "clear":
 		writeConfig(emptyConfig())
 	case "cycle":
 		c.cycleSelected()
-		c.login()
+		if err := login(c); err != nil {
+			c.del(c.Selected)
+		}
 	case "del":
 		c.del(getOption(args))
-		c.login()
 	case "prune":
 		c.prune()
-		c.login()
+		if err := login(c); err != nil {
+			c.del(c.Selected)
+		}
 	default:
 		c.cycleSelected()
-		c.login()
+		if err := login(c); err != nil {
+			c.del(c.Selected)
+		}
 	}
 
 	writeConfig(c)
