@@ -86,7 +86,7 @@ func (c *config) login() {
 		out  bytes.Buffer
 	)
 
-	fmt.Println(yellow.Render(fmt.Sprintf("Logging into Server: %v", h.Server)))
+	fmt.Println(yellow.Render(fmt.Sprintf("Logging into Server: %v\n", h.Server)))
 
 	switch h.Version {
 	case "4.X":
