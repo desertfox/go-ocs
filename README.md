@@ -10,7 +10,6 @@ OCS is a wrapper for openshift cli-client *oc* logins to facilitate switching be
 `ocs command --opt_name=opt_value`
 - login
 - list
-- swap
 - clear
 - cycle ( No command word executes cycle )
 - del
@@ -29,10 +28,6 @@ Adds server host and token hash to local config and executes oc login passthroug
 Lists Hosts in config, no-op
 - `ocs list`
 
-### Swap 
-Swap between Hosts in config and executes oc login
-- `ocs swap 2`
-
 ### Clear
 Clear config entries
 - `ocs clear`
@@ -47,7 +42,7 @@ Removes Host from config
 
 ### Prune
 Remove credentials that are older than 24 hours
-- `osc prune`
+- `ocs prune`
 
 ### Help
 Prints this file

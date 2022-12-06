@@ -1,11 +1,9 @@
 package main
 
 import (
-	"os"
+	"github.com/desertfox/ocs/cmd"
 )
 
 func main() {
-	command, server, token, version := parseArgs(os.Args)
-
-	Do(command, newHost(server, token, version), os.Args)
+	cmd.Execute()
 }

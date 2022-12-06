@@ -1,4 +1,4 @@
-package main
+package ocs
 
 import (
 	"fmt"
@@ -24,7 +24,7 @@ func generateStyleBackground(color string) lipgloss.Style {
 	return style.Copy().Background(lipgloss.Color(color))
 }
 
-func printStatus(c *config) {
+func PrintStatus(c *config) {
 	selectedColor := strconv.Itoa(25 + c.Selected*20)
 	selectedString := generateStyleForeground(selectedColor).Render(fmt.Sprintf("Selected: %v ", c.Selected))
 
