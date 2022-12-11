@@ -9,7 +9,7 @@ var cycleCmd = &cobra.Command{
 	Use:   "",
 	Short: "cycle logged in host",
 	Long:  ``,
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		config.CycleSelected()
 
 		if err := ocs.Login(config); err != nil {

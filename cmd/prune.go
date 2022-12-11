@@ -9,7 +9,7 @@ var pruneCmd = &cobra.Command{
 	Use:   "prune",
 	Short: "prune more than 24hr old hosts",
 	Long:  ``,
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		config.Prune()
 
 		if len(config.Hosts) > 0 {

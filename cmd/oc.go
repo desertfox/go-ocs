@@ -9,7 +9,7 @@ var (
 	ocCmd = &cobra.Command{
 		Use:   "oc",
 		Short: "oc login command string",
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(_ *cobra.Command, args []string) {
 			h := ocs.NewHost(server, token)
 
 			config.Add(h)

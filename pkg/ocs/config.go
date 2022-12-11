@@ -33,8 +33,7 @@ func GetConfig() *config {
 		WriteConfig(c)
 	}
 
-	err = yaml.Unmarshal(file, &c)
-	if err != nil {
+	if err = yaml.Unmarshal(file, &c); err != nil {
 		fmt.Println("Uh oh:" + err.Error())
 	}
 
@@ -48,10 +47,8 @@ func WriteConfig(c *config) {
 		return
 	}
 
-	err = ioutil.WriteFile(buildConfigFilePath(), data, 0644)
-	if err != nil {
+	if err = ioutil.WriteFile(buildConfigFilePath(), data, 0644); err != nil {
 		fmt.Println("unable to write data to config file" + err.Error())
-		return
 	}
 }
 
@@ -64,13 +61,15 @@ func NewHost(server, token string) host {
 }
 
 func buildConfigFilePath() string {
-	home, err := os.UserHomeDir()
-	if err != nil {
-		fmt.Println("unable to find homedir" + err.Error())
+	if home, err := os.UserHomeDir(); err == nil {
+		return filepath.Join(home, configFileName)
 	}
 
-	return filepath.Join(home, configFileName)
+	fmt.Println("unable to find homedir")
+
+	return "."
 }
+
 func EmptyConfig() *config {
 	return &config{
 		Selected: 0,

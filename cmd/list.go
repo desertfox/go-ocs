@@ -8,9 +8,7 @@ var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "list hosts",
 	Long:  ``,
-	Run: func(cmd *cobra.Command, args []string) {
-
-	},
+	Run:   func(_ *cobra.Command, _ []string) {},
 }
 
 func init() {

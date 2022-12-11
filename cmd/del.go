@@ -11,7 +11,7 @@ var delCmd = &cobra.Command{
 	Use:   "del",
 	Short: "delete logged in host",
 	Long:  ``,
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, args []string) {
 		i, _ := strconv.Atoi(args[0])
 
 		config.Del(i)

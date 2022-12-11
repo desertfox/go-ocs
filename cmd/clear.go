@@ -9,7 +9,7 @@ var clearCmd = &cobra.Command{
 	Use:   "clear",
 	Short: "clear saved hosts",
 	Long:  ``,
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		ocs.WriteConfig(ocs.EmptyConfig())
 	},
 }
