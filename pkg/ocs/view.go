@@ -24,6 +24,18 @@ func generateStyleBackground(color string) lipgloss.Style {
 	return style.Copy().Background(lipgloss.Color(color))
 }
 
+func printColor(color string, s string) {
+	switch c := color; c {
+	case "red":
+		fmt.Println(red.Render(s))
+	case "green":
+		fmt.Println(green.Render(s))
+	case "yellow":
+		fmt.Println(yellow.Render(s))
+	default:
+	}
+}
+
 func PrintStatus(c *config) {
 	selectedColor := strconv.Itoa(25 + c.Selected*20)
 	selectedString := generateStyleForeground(selectedColor).Render(fmt.Sprintf("Selected: %v ", c.Selected))

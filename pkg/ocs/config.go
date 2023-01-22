@@ -2,7 +2,7 @@ package ocs
 
 import (
 	"fmt"
-	"io/ioutil"
+
 	"os"
 	"path/filepath"
 	"time"
@@ -10,9 +10,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-var (
-	configFileName string = ".ocsconfig"
-)
+var configFileName string = ".ocsconfig"
 
 type config struct {
 	Selected int `yaml:"Selected"`
@@ -25,15 +23,30 @@ type host struct {
 	Created time.Time `yaml:"Created"`
 }
 
+func EmptyConfig() *config {
+	return &config{
+		Selected: 0,
+		Hosts:    []host{},
+	}
+}
+
+func NewHost(server, token string) host {
+	return host{
+		Server:  server,
+		Token:   token,
+		Created: time.Now(),
+	}
+}
+
 func GetConfig() *config {
 	c := EmptyConfig()
 
-	file, err := ioutil.ReadFile(buildConfigFilePath())
+	file, err := os.ReadFile(buildConfigFilePath())
 	if err != nil {
 		WriteConfig(c)
 	}
 
-	if err = yaml.Unmarshal(file, &c); err != nil {
+	if err := yaml.Unmarshal(file, &c); err != nil {
 		fmt.Println("Uh oh:" + err.Error())
 	}
 
@@ -47,16 +60,8 @@ func WriteConfig(c *config) {
 		return
 	}
 
-	if err = ioutil.WriteFile(buildConfigFilePath(), data, 0644); err != nil {
+	if err := os.WriteFile(buildConfigFilePath(), data, 0644); err != nil {
 		fmt.Println("unable to write data to config file" + err.Error())
-	}
-}
-
-func NewHost(server, token string) host {
-	return host{
-		Server:  server,
-		Token:   token,
-		Created: time.Now(),
 	}
 }
 
@@ -68,13 +73,6 @@ func buildConfigFilePath() string {
 	fmt.Println("unable to find homedir")
 
 	return "."
-}
-
-func EmptyConfig() *config {
-	return &config{
-		Selected: 0,
-		Hosts:    []host{},
-	}
 }
 
 func (c *config) Add(h host) host {

@@ -13,7 +13,7 @@ func Login(c *config) error {
 		out bytes.Buffer
 	)
 
-	fmt.Println(yellow.Render(fmt.Sprintf("Logging into Server: %v\n", h.Server)))
+	printColor("yellow", fmt.Sprintf("Logging into Server: %v\n", h.Server))
 
 	cmd := exec.Command("oc", "login", fmt.Sprintf("--token=%v", h.Token), fmt.Sprintf("--server=%v", h.Server))
 	cmd.Stdout = &out
@@ -30,12 +30,12 @@ func Login(c *config) error {
 			es = err.Error()
 		}
 
-		fmt.Println(red.Render(es))
+		printColor("red", es)
 
 		return errors.New(es)
 	}
 
-	fmt.Println(green.Render(out.String()))
+	printColor("green", out.String())
 
 	return nil
 }
